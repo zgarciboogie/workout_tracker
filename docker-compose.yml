@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12.3
+    container_name: postgres
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_PASSWORD: "secret"
+    restart: "always"
+  restful:
+    build: ./src/restful/
+    image: &restful restful
+    container_name: restful
+    volumes:
+      - "./src/restful/rest/:/code/"
+    command: >
+      bash -c " python manage.py makemigrations 
+      && python manage.py migrate 
+      && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    restart: "always"
+  web:
+    build: ./src/web
+    image: &web web
+    container_name: web
+    volumes:
+      - "./src/web/:/code/"
+    command: >
+      bash -c "python test.py"
+    depends_on:
+      - postgres
+    restart: "always"
+
+volumes:
+  postgres:
