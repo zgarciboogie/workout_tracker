@@ -12,4 +12,4 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = m.Product
-        fields = ['name', 'description', 'owner']
+        fields = ['id', 'name', 'description', 'owner']
