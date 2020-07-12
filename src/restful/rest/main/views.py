@@ -3,7 +3,7 @@ import main.models as mm
 import main.serializers as ms
 from django.http import Http404
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework import status
 from django.contrib.auth.models import User
 
@@ -31,7 +31,7 @@ class ProductList(APIView):
         if request.user.is_anonymous:
             return Response({'detail': 'User is not authenticated.'}, status=status.HTTP_403_FORBIDDEN)
         products = mm.Product.objects.all().filter(owner=request.user)
-        serializer = ms.ProductSerializer(products, many=True)
+        serializer = ms.ProductSerializer(products, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -57,7 +57,7 @@ class ProductDetail(APIView):
         if request.user.is_anonymous:
             return Response({'detail': 'User is not authenticated.'}, status=status.HTTP_403_FORBIDDEN)
         product = self.get_object(pk)
-        serializer = ms.ProductSerializer(product)
+        serializer = ms.ProductSerializer(product, context={'request': request})
         return Response(serializer.data)
 
 
