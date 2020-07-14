@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Product(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     description = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=256)
 
@@ -23,6 +23,7 @@ class Feature(models.Model):
 
 
 class Exercise(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=256)
     description = models.TextField(blank=True, null=True)
     feature = models.ManyToManyField(Feature)
